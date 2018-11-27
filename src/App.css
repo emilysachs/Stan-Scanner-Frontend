@@ -22,6 +22,23 @@
   color: #61dafb;
 }
 
+.stanBox {
+  border: 1px solid grey;
+  flex-grow: 1;
+  flex-basis: 20%;
+  padding: 10px;
+}
+
+.stanGrid {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.stanWindow {
+  max-width: 1000px;
+  margin: auto;
+}
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);

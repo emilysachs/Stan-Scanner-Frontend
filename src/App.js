@@ -1,25 +1,86 @@
 import React, { Component } from 'react';
+import { Route, Link } from 'react-router-dom'
+import axios from 'axios'
 import logo from './logo.svg';
 import './App.css';
+import Signup from './components/sign-up';
+import LoginForm from './components/login-form';
+import Home from './components/home';
+
+axios.defaults.withCredentials = true;
 
 class App extends Component {
+  constructor() {
+   super()
+   this.state = {
+     loggedIn: false,
+     username: null,
+     userID: null,
+   }
+
+   this.getUser = this.getUser.bind(this)
+   this.componentDidMount = this.componentDidMount.bind(this)
+   this.updateUser = this.updateUser.bind(this)
+ }
+
+ componentDidMount() {
+   this.getUser()
+}
+
+ updateUser (userObject) {
+   console.log("updating!");
+   console.log(userObject);
+   this.setState(userObject);
+ }
+
+ getUser() {
+   console.log("getting");
+   axios.get('http://localhost:3005/v1/account/').then(response => {
+     console.log('Get user response: ')
+     console.log(response.data);
+     console.log(response.data.user);
+     if (response.data.user) {
+       console.log('Get User: There is a user saved in the server session: ')
+
+       this.setState({
+         loggedIn: true,
+         username: response.data.user.username,
+         userID: response.data.user._id,
+       });
+     } else {
+       console.log('Get user: no user');
+       this.setState({
+         loggedIn: false,
+         username: null
+       })
+     }
+   })
+ }
   render() {
+
     return (
       <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
+      <p>{this.state.username} is logged in {this.state.loggedIn.toString()}</p>
+        <Route
+          exact path="/"
+          render={() =>
+            <Home
+            username={this.state.username}
+            userID={this.state.userID}
+            />}
+        />
+        <Route
+          path="/login"
+          render={() =>
+            <LoginForm
+              updateUser={this.updateUser}
+            />}
+        />
+        <Route
+          path="/signup"
+          render={() =>
+            <Signup/>}
+        />
       </div>
     );
   }
