@@ -1,5 +1,7 @@
 .App {
   text-align: center;
+  background-color: #c9bce0;
+  font-family: 'Open Sans', sans-serif;
 }
 
 .App-logo {
@@ -7,9 +9,14 @@
   height: 40vmin;
 }
 
+.App-title {
+  float: left;
+}
+
 .App-header {
+  font-family: 'Varela Round', sans-serif;
   background-color: #282c34;
-  min-height: 100vh;
+  min-height: 100px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -22,11 +29,38 @@
   color: #61dafb;
 }
 
+.body{
+  display: flex;
+  flex-direction: column;
+}
+
+.sideBar {
+  padding: 0px 10px;
+}
+
+
+@media (min-width: 768px) {
+  .body {
+    flex-direction: row;
+    flex: 1;
+  }
+  .mainContent {
+    flex: 1;
+  }
+  .sideBar {
+    flex: 0 0 12em;
+  }
+}
+
 .stanBox {
-  border: 1px solid grey;
-  flex-grow: 1;
-  flex-basis: 20%;
   padding: 10px;
+  background-color: white;
+}
+
+.stanOutline {
+  flex-grow: 1;
+  padding: 5px;
+  flex-basis: 20%;
 }
 
 .stanGrid {

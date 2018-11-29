@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { Redirect } from 'react-router-dom'
 import axios from 'axios'
 
 axios.defaults.withCredentials = true;
@@ -63,9 +64,9 @@ class Home extends Component {
           stans: [],
           fandoms: [],
           value: '',
-          distance: '100',
+          distance: '10000',
           latitude: 0,
-          longitude: 0
+          longitude: 0,
         }
     }
 
@@ -90,6 +91,7 @@ class Home extends Component {
           });
 
           this.findStansNearby();
+          console.log("KABAAAAANG");
         } else {
           console.log('Get user data: no user');
         }
@@ -112,7 +114,9 @@ class Home extends Component {
                           position.coords.latitude + '/' + position.coords.longitude).then(response => {
                 console.log(response);
                 console.log(response.data.coordinates);
+                console.log("KABOOOOM");
                 this.findStansNearby();
+
               });
             }
           });
@@ -198,32 +202,40 @@ class Home extends Component {
           var fandoms = stan.stan.fandoms.map(s => s.trim());
           fandoms = fandoms.join(", ");
           return (
-            <div className="stanBox">
-              <p>{stan.stan.username}</p>
-              <p>{stan.stan._id}</p>
-              <p>{fandoms}</p>
-              <p>Mutuals: {stan.mutuals.toString()}</p>
-              <p>Distance: {stan.stan.distance}</p>
-              {!stan.mutuals &&<button onClick={() => {this.approveMe(stan.id)}}>approve</button>}
-              {stan.mutuals &&<button onClick={() => {this.sayHi(stan.stan._id)}}>say hi</button>}
-              <button onClick={() => {this.ignoreMe(stan.id)}}>ignore</button>
+            <div className="stanOutline">
+              <div className="stanBox">
+                <p>{stan.stan.username}</p>
+                <p>{stan.stan._id}</p>
+                <p>{fandoms}</p>
+                <p>Mutuals: {stan.mutuals.toString()}</p>
+                <p>Distance: {stan.stan.distance}</p>
+                {!stan.mutuals &&<button onClick={() => {this.approveMe(stan.id)}}>approve</button>}
+                {stan.mutuals &&<button onClick={() => {this.sayHi(stan.stan._id)}}>say hi</button>}
+                <button onClick={() => {this.ignoreMe(stan.id)}}>ignore</button>
+              </div>
             </div>
             );
         })
+
         return (
-            <div>
+            <div className="body">
+              <div className="sideBar">
                 <p>It's good to be home {this.props.username} and {this.props.userID}</p>
                 <p>in {this.state.latitude}, {this.state.longitude}</p>
                 <p>Your fandoms are:</p>
                 <ul>{fandomsList}</ul>
+              </div>
+              <div className="mainContent">
                 <AddForm handleClick={this.handleClick.bind(this)} handleChange={this.handleChange.bind(this)} value={this.state.value}/>
                 <DistanceForm handleClick={this.handleDistanceClick.bind(this)} handleChange={this.handleDistanceChange.bind(this)} distanceInput={this.state.distanceInput}/>
                 <p>Your fellow stans within {this.state.distance} miles are:</p>
                 <div className="stanWindow">
                   <div className="stanGrid">{stansList}</div>
                 </div>
+              </div>
             </div>
         )
+
 
     }
 }

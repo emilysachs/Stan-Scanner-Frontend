@@ -5,6 +5,7 @@ import logo from './logo.svg';
 import './App.css';
 import Signup from './components/sign-up';
 import LoginForm from './components/login-form';
+import Navbar from './components/navbar';
 import Home from './components/home';
 
 axios.defaults.withCredentials = true;
@@ -60,6 +61,7 @@ class App extends Component {
 
     return (
       <div className="App">
+      <Navbar updateUser={this.updateUser} loggedIn={this.state.loggedIn} />
       <p>{this.state.username} is logged in {this.state.loggedIn.toString()}</p>
         <Route
           exact path="/"
@@ -67,6 +69,7 @@ class App extends Component {
             <Home
             username={this.state.username}
             userID={this.state.userID}
+            loggedIn={this.state.loggedIn}
             />}
         />
         <Route
