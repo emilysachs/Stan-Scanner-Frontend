@@ -38,6 +38,27 @@ class AddForm extends Component {
   }
 }
 
+class NameForm extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      value: this.props.value,
+      default: this.props.default
+    };
+  }
+
+  render(){
+    return(
+      <div>
+        <label>
+          <input type="text" placeholder={this.props.default} value={this.props.value} onChange={this.props.handleChange} />
+        </label>
+        <button onClick={this.props.handleClick}>change display name</button>
+      </div>
+    );
+  }
+}
+
 class DistanceForm extends Component {
   constructor(props) {
     super(props);
@@ -62,6 +83,8 @@ class Home extends Component {
         super(props)
         this.state = {
           twitter: '',
+          display_name: '',
+          nameValue: '',
           stans: [],
           fandoms: [],
           value: '',
@@ -82,7 +105,7 @@ class Home extends Component {
 
     getUser() {
       console.log("getting data");
-      axios.get('http://localhost:3005/v1/account/data').then(response => {
+      axios.get(process.env.REACT_APP_API_URL + '/v1/account/data').then(response => {
         console.log('Get user response: ')
         console.log(response.data);
         console.log(response.data.username);
@@ -93,7 +116,8 @@ class Home extends Component {
             latitude: response.data.last_known_location.coordinates[1],
             longitude: response.data.last_known_location.coordinates[0],
             fandoms: response.data.fandoms,
-            twitter: response.data.twitter
+            twitter: response.data.twitter,
+            display_name: response.data.display_name
           });
 
           this.findStansNearby();
@@ -116,7 +140,7 @@ class Home extends Component {
                 latitude: position.coords.latitude,
                 longitude: position.coords.longitude
               });
-              axios.put('http://localhost:3005/v1/account/updateLocation/' +
+              axios.put(process.env.REACT_APP_API_URL + '/v1/account/updateLocation/' +
                           position.coords.latitude + '/' + position.coords.longitude).then(response => {
                 console.log(response);
                 console.log(response.data.coordinates);
@@ -136,39 +160,25 @@ class Home extends Component {
       this.setState({
         stans: []
       }, () => {
-        axios.get('http://localhost:3005/v1/account/me/' + this.state.distance * 1.609344).then(response => {
+        axios.get(process.env.REACT_APP_API_URL + '/v1/account/me/' + this.state.distance * 1.609344).then(response => {
           console.log("Response here!!");
           console.log(response);
-          for (let stan of response.data) {
-            axios.get('http://localhost:3005/v1/following/mutual/' + this.props.username + '/' + stan.username).then(res => {
-              console.log(res);
-              var stanObj = {};
-              stanObj.stan = stan;
-              stanObj.mutuals = res.data.mutuals;
-              stanObj.following = res.data.following;
-              var stanStore = this.state.stans;
-              stanStore.push(stanObj);
-              this.setState({
-                stans: stanStore
-              });
-            });
-          }
+          this.setState({
+            stans: response.data
+          });
+
         });
       });
     }
 
     approveMe(stanUsername){
-      axios.post('http://localhost:3005/v1/following/add',
-        {
-          from: this.props.username,
-          to: stanUsername
-        }).then(response => {
+      axios.get(process.env.REACT_APP_API_URL + '/v1/account/approve/' + stanUsername).then(response => {
         console.log(response.data);
       });
     }
 
     sayHi(userID){
-      axios.get('http://localhost:3005/v1/account/sayHi/' + userID).then(response => {
+      axios.get(process.env.REACT_APP_API_URL + '/v1/account/sayHi/' + userID).then(response => {
         window.open('http://twitter.com/' + response.data.twitter, '_blank');
       });
     }
@@ -179,6 +189,13 @@ class Home extends Component {
      handleChange(event) {
        this.setState({value: event.target.value});
      }
+
+     handleNameClick(){
+        this.updateDisplayName();
+      }
+      handleNameChange(event) {
+        this.setState({nameValue: event.target.value});
+      }
 
      handleDistanceClick(){
        console.log("release!");
@@ -193,12 +210,23 @@ class Home extends Component {
       }
 
      updateFandoms(){
-       axios.put('http://localhost:3005/v1/account/addFandom/' + this.state.value).then(response => {
+       axios.put(process.env.REACT_APP_API_URL + '/v1/account/addFandom/' + this.state.value.toLowerCase()).then(response => {
          console.log(response);
          this.setState({
            fandoms: response.data.fandoms
          });
          this.findStansNearby();
+       });
+     }
+
+     updateDisplayName(){
+       axios.post(process.env.REACT_APP_API_URL + '/v1/account/updateDisplayName/', {
+         name: this.state.nameValue
+       }).then(response => {
+         console.log(response);
+         this.setState({
+           display_name: response.data.name
+         });
        });
      }
 
@@ -214,8 +242,8 @@ class Home extends Component {
         })
 
         function compare(a,b) {
-          var distanceA = parseFloat(a.stan.distance);
-          var distanceB = parseFloat(b.stan.distance);
+          var distanceA = parseFloat(a.distance);
+          var distanceB = parseFloat(b.distance);
           if (distanceA < distanceB)
             return -1;
           if (distanceA > distanceB)
@@ -225,18 +253,18 @@ class Home extends Component {
 
 
         var stansList = stans.sort(compare).map((stan) => {
-          var fandoms = stan.stan.fandoms.map(s => s.trim());
+          var fandoms = stan.fandoms.map(s => s.trim());
           fandoms = fandoms.join(", ");
           return (
-            <div className="stanOutline" key={stan.stan.username}>
+            <div className="stanOutline" key={stan.username}>
               <div className="stanBox">
                 <div className="stanDetails">
-                  <p className="stanUsername">{stan.stan.username}</p>
-                  <p className="stanDistance">{stan.stan.distance} miles away</p>
+                  <p className="stanUsername">{stan.display_name}</p>
+                  <p className="stanDistance">{stan.distance} miles away</p>
                   <div className="stanActions">
-                    {!stan.following && <button onClick={() => {this.approveMe(stan.stan.username)}}>🙏 shoot ur shot</button>}
+                    {!stan.following && <button onClick={() => {this.approveMe(stan.username)}}>🙏 shoot ur shot</button>}
                     {stan.following && !stan.mutuals && <p>😌 (pending)</p>}
-                    {stan.mutuals && <button onClick={() => {this.sayHi(stan.stan._id)}}>😗🤝 say hi !</button>}
+                    {stan.mutuals && <button onClick={() => {this.sayHi(stan._id)}}>😗🤝 say hi !</button>}
                   </div>
                 </div>
                 <p className="stanFandoms">{fandoms}</p>
@@ -252,10 +280,12 @@ class Home extends Component {
                 <div className="fandomGrid">{fandomsList}</div>
                 <br></br>
                 <AddForm handleClick={this.handleClick.bind(this)} handleChange={this.handleChange.bind(this)} value={this.state.value}/>
+                <p>display name: {this.state.display_name}</p>
+                <NameForm handleClick={this.handleNameClick.bind(this)} handleChange={this.handleNameChange.bind(this)} value={this.state.nameValue} default={this.state.display_name}/>
               </div>
               <div className="mainContent">
                 <div className="distanceInput">
-                  <p>hey {this.state.twitter}! your fellow stans within {this.state.distanceInput} miles are,,</p>
+                  <p>hey {this.state.twitter}! your fellow stans within {this.state.distanceInput} miles are:</p>
                   <DistanceForm handleClick={this.handleDistanceClick.bind(this)} handleChange={this.handleDistanceChange.bind(this)} distanceInput={this.state.distanceInput}/>
                 </div>
                 <div className="stanWindow">

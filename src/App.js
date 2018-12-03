@@ -37,7 +37,7 @@ class App extends Component {
 
  getUser() {
    console.log("getting");
-   axios.get('http://localhost:3005/v1/account/').then(response => {
+   axios.get(process.env.REACT_APP_API_URL + '/v1/account/').then(response => {
      console.log('Get user response: ')
      console.log(response.data);
      console.log(response.data.user);

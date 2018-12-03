@@ -24,7 +24,7 @@ class LoginForm extends Component {
     }
 
     handleTwitterSignIn(){
-      axios.get('http://localhost:3005/v1/account/auth/twitter').then(response => {
+      axios.get(process.env.REACT_APP_API_URL + '/v1/account/auth/twitter').then(response => {
         console.log(response);
       });
     }
@@ -34,7 +34,7 @@ class LoginForm extends Component {
         console.log('handleSubmit')
 
         axios
-            .post('http://localhost:3005/v1/account/login', {
+            .post(process.env.REACT_APP_API_URL + '/v1/account/login', {
                 username: this.state.username,
                 password: this.state.password
             })

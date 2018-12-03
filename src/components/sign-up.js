@@ -26,7 +26,7 @@ class Signup extends Component {
 		event.preventDefault()
 
 		//request to server to add a new username/password
-		axios.post('http://localhost:3005/v1/account/register', {
+		axios.post(process.env.REACT_APP_API_URL + '/v1/account/register', {
 			username: this.state.username,
 			password: this.state.password,
       last_known_location : {
