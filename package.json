@@ -26,7 +26,6 @@
     "not ie <= 11",
     "not op_mini all"
   ],
-  "proxy": "http://localhost:3005",
   "devDependencies": {
     "dotenv": "^6.1.0"
   }
