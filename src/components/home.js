@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import { Redirect } from 'react-router-dom'
 import axios from 'axios'
 
 axios.defaults.withCredentials = true;
@@ -31,9 +30,9 @@ class AddForm extends Component {
     return(
       <div>
         <label>
-          <input type="text" value={this.props.value} onChange={this.props.handleChange} />
+          <input placeholder="bts" type="text" value={this.props.value} onChange={this.props.handleChange} />
         </label>
-        <button onClick={this.props.handleClick}> Add new fandom </button>
+        <button onClick={this.props.handleClick}>add to stan list</button>
       </div>
     );
   }
@@ -47,11 +46,12 @@ class DistanceForm extends Component {
 
   render(){
     return(
-      <div>
-        <label>
-          <input type="text" value={this.props.distance} onChange={this.props.handleChange} />
-        </label>
-        <button onClick={this.props.handleClick}> Set radius distance </button>
+      <div className="distanceSlider">
+        <p>
+          0
+          <input onMouseUp={this.props.handleClick} onChange={this.props.handleChange} defaultValue="5000" type="range" min="0" max="5000" step="10"/>
+          5000
+        </p>
       </div>
     );
   }
@@ -61,18 +61,23 @@ class Home extends Component {
     constructor(props) {
         super(props)
         this.state = {
+          twitter: '',
           stans: [],
           fandoms: [],
           value: '',
-          distance: '10000',
+          distance: '5000',
+          distanceInput: '5000',
           latitude: 0,
           longitude: 0,
         }
     }
 
     componentDidMount(){
-      this.getUser();
-      this.getLocation();
+      console.log("COMPONENT DID MOUNT~*~*~*~*~*");
+      if(this.props.loggedIn){
+        this.getUser();
+        this.getLocation();
+      }
     }
 
     getUser() {
@@ -87,7 +92,8 @@ class Home extends Component {
           this.setState({
             latitude: response.data.last_known_location.coordinates[1],
             longitude: response.data.last_known_location.coordinates[0],
-            fandoms: response.data.fandoms
+            fandoms: response.data.fandoms,
+            twitter: response.data.twitter
           });
 
           this.findStansNearby();
@@ -115,7 +121,6 @@ class Home extends Component {
                 console.log(response);
                 console.log(response.data.coordinates);
                 console.log("KABOOOOM");
-                this.findStansNearby();
 
               });
             }
@@ -140,6 +145,7 @@ class Home extends Component {
               var stanObj = {};
               stanObj.stan = stan;
               stanObj.mutuals = res.data.mutuals;
+              stanObj.following = res.data.following;
               var stanStore = this.state.stans;
               stanStore.push(stanObj);
               this.setState({
@@ -148,6 +154,16 @@ class Home extends Component {
             });
           }
         });
+      });
+    }
+
+    approveMe(stanUsername){
+      axios.post('http://localhost:3005/v1/following/add',
+        {
+          from: this.props.username,
+          to: stanUsername
+        }).then(response => {
+        console.log(response.data);
       });
     }
 
@@ -165,6 +181,7 @@ class Home extends Component {
      }
 
      handleDistanceClick(){
+       console.log("release!");
        this.setState({
          distance: this.state.distanceInput
        }, () => {
@@ -187,31 +204,42 @@ class Home extends Component {
 
 
     render() {
-        const imageStyle = {
-            width: 400
-        }
-        const { stans, fandoms } = this.state;
+        var { stans, fandoms } = this.state;
         const fandomsList = fandoms.map((fandom) => {
           return (
-            <li key={fandom}>
+            <div className="fandomBox" key={fandom}>
               {fandom}
-            </li>
+            </div>
             );
         })
-        var stansList = stans.map((stan) => {
+
+        function compare(a,b) {
+          var distanceA = parseFloat(a.stan.distance);
+          var distanceB = parseFloat(b.stan.distance);
+          if (distanceA < distanceB)
+            return -1;
+          if (distanceA > distanceB)
+            return 1;
+          return 0;
+        }
+
+
+        var stansList = stans.sort(compare).map((stan) => {
           var fandoms = stan.stan.fandoms.map(s => s.trim());
           fandoms = fandoms.join(", ");
           return (
-            <div className="stanOutline">
+            <div className="stanOutline" key={stan.stan.username}>
               <div className="stanBox">
-                <p>{stan.stan.username}</p>
-                <p>{stan.stan._id}</p>
-                <p>{fandoms}</p>
-                <p>Mutuals: {stan.mutuals.toString()}</p>
-                <p>Distance: {stan.stan.distance}</p>
-                {!stan.mutuals &&<button onClick={() => {this.approveMe(stan.id)}}>approve</button>}
-                {stan.mutuals &&<button onClick={() => {this.sayHi(stan.stan._id)}}>say hi</button>}
-                <button onClick={() => {this.ignoreMe(stan.id)}}>ignore</button>
+                <div className="stanDetails">
+                  <p className="stanUsername">{stan.stan.username}</p>
+                  <p className="stanDistance">{stan.stan.distance} miles away</p>
+                  <div className="stanActions">
+                    {!stan.following && <button onClick={() => {this.approveMe(stan.stan.username)}}>🙏 shoot ur shot</button>}
+                    {stan.following && !stan.mutuals && <p>😌 (pending)</p>}
+                    {stan.mutuals && <button onClick={() => {this.sayHi(stan.stan._id)}}>😗🤝 say hi !</button>}
+                  </div>
+                </div>
+                <p className="stanFandoms">{fandoms}</p>
               </div>
             </div>
             );
@@ -220,18 +248,21 @@ class Home extends Component {
         return (
             <div className="body">
               <div className="sideBar">
-                <p>It's good to be home {this.props.username} and {this.props.userID}</p>
-                <p>in {this.state.latitude}, {this.state.longitude}</p>
-                <p>Your fandoms are:</p>
-                <ul>{fandomsList}</ul>
+                <p>stan list ✨</p>
+                <div className="fandomGrid">{fandomsList}</div>
+                <br></br>
+                <AddForm handleClick={this.handleClick.bind(this)} handleChange={this.handleChange.bind(this)} value={this.state.value}/>
               </div>
               <div className="mainContent">
-                <AddForm handleClick={this.handleClick.bind(this)} handleChange={this.handleChange.bind(this)} value={this.state.value}/>
-                <DistanceForm handleClick={this.handleDistanceClick.bind(this)} handleChange={this.handleDistanceChange.bind(this)} distanceInput={this.state.distanceInput}/>
-                <p>Your fellow stans within {this.state.distance} miles are:</p>
+                <div className="distanceInput">
+                  <p>hey {this.state.twitter}! your fellow stans within {this.state.distanceInput} miles are,,</p>
+                  <DistanceForm handleClick={this.handleDistanceClick.bind(this)} handleChange={this.handleDistanceChange.bind(this)} distanceInput={this.state.distanceInput}/>
+                </div>
                 <div className="stanWindow">
                   <div className="stanGrid">{stansList}</div>
                 </div>
+              </div>
+              <div className="rightSideBar">
               </div>
             </div>
         )

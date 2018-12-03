@@ -23,6 +23,12 @@ class LoginForm extends Component {
         })
     }
 
+    handleTwitterSignIn(){
+      axios.get('http://localhost:3005/v1/account/auth/twitter').then(response => {
+        console.log(response);
+      });
+    }
+
     handleSubmit(event) {
         event.preventDefault()
         console.log('handleSubmit')
@@ -99,6 +105,7 @@ class LoginForm extends Component {
                                 type="submit">Login</button>
                         </div>
                     </form>
+                    <a href="http://localhost:3005/v1/account/auth/twitter">Sign In with Twitter</a>
                 </div>
             )
         }

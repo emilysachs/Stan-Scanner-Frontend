@@ -1,7 +1,11 @@
+body {
+  background-color: #c8cddd;
+}
+
 .App {
   text-align: center;
-  background-color: #c9bce0;
-  font-family: 'Open Sans', sans-serif;
+  font-family: 'Didact Gothic', sans-serif;
+  font-size: 18px;
 }
 
 .App-logo {
@@ -10,19 +14,31 @@
 }
 
 .App-title {
-  float: left;
+  margin: 0;
 }
 
 .App-header {
   font-family: 'Varela Round', sans-serif;
   background-color: #282c34;
-  min-height: 100px;
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
+  flex-direction: row;
+  justify-content: space-between;
+  font-size: 20px;
   color: white;
+  padding: 15px;
+}
+
+.App-header h1 {
+  font-size: 26px;
+  width: 200px;
+}
+
+.App-header section {
+  padding: 0px 10px;
+  padding-top: 6px;
+}
+.App-header section a {
+  padding: 0px 5px;
 }
 
 .App-link {
@@ -34,10 +50,92 @@
   flex-direction: column;
 }
 
+button {
+  cursor: pointer;
+  font-size: 14px;
+  font-family: 'Varela Round', sans-serif;
+  border-radius: 5px;
+  padding: 5px 7px;
+}
+
+.distanceInput {
+  max-width: 1000px;
+  text-align: center;
+  margin: auto;
+}
+
+.fandomGrid {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.fandomBox {
+  justify-content: space-around;
+  flex: 1;
+  flex-grow: 0;
+  flex-basis: 25%;
+}
+
 .sideBar {
   padding: 0px 10px;
 }
 
+.sideBar ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.distanceInput  p {
+  margin: 10px;
+}
+
+.distanceSlider {
+  margin: 10px;
+}
+
+
+.navbar a {
+  color: white;
+  margin: 0;
+  text-decoration: none;
+}
+
+.stanBox {
+  padding: 10px;
+  background-color: white;
+  border-radius: 1em;
+  overflow: auto;
+  display: flex;
+  flex-direction: row;
+}
+
+.stanBox p {
+  margin: 5px;
+}
+
+.stanOutline {
+  flex-grow: 1;
+  padding: 5px;
+  flex-basis: 20%;
+}
+
+.stanDetails {
+  flex: 0 0 12em;
+}
+
+.stanFandoms {
+  text-align: left;
+}
+
+.stanGrid {
+  clear: both;
+}
+
+.stanWindow {
+  max-width: 1000px;
+  margin: auto;
+}
 
 @media (min-width: 768px) {
   .body {
@@ -50,27 +148,57 @@
   .sideBar {
     flex: 0 0 12em;
   }
-}
+  .rightSideBar {
+    flex: 0 0 6em;
+  }
+  .fandomGrid {
+    display: block;
+  }
+  .distanceInput  p {
+    padding: 0;
+    float: left;
+  }
 
-.stanBox {
-  padding: 10px;
-  background-color: white;
-}
+  .distanceSlider {
+    float: right;
+    margin: 0;
+    padding: 0;
+    margin-right: 15px;
+  }
 
-.stanOutline {
-  flex-grow: 1;
-  padding: 5px;
-  flex-basis: 20%;
-}
+  .stanBox {
+    padding: 10px;
+    background-color: white;
+    border-radius: 1em;
+    display: block;
+  }
 
-.stanGrid {
-  display: flex;
-  flex-wrap: wrap;
-}
+  .stanBox p {
+    margin: 5px;
+  }
 
-.stanWindow {
-  max-width: 1000px;
-  margin: auto;
+  .stanOutline {
+    flex-basis: 20%;
+  }
+
+  .stanGrid {
+    display: flex;
+    flex-wrap: wrap;
+    clear: both;
+  }
+
+  .stanFandoms {
+    text-align: center;
+  }
+
+  .stanWindow {
+    max-width: 1000px;
+    margin: auto;
+  }
+
+  .stanUsername, .stanDistance, .stanActions {
+    float: none;
+  }
 }
 
 @keyframes App-logo-spin {

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Route, Link } from 'react-router-dom'
+import { Route, Link, withRouter } from 'react-router-dom'
 import axios from 'axios'
 import logo from './logo.svg';
 import './App.css';
@@ -17,6 +17,7 @@ class App extends Component {
      loggedIn: false,
      username: null,
      userID: null,
+     loadedApi: false
    }
 
    this.getUser = this.getUser.bind(this)
@@ -47,13 +48,17 @@ class App extends Component {
          loggedIn: true,
          username: response.data.user.username,
          userID: response.data.user._id,
+         loadedApi: true
        });
      } else {
        console.log('Get user: no user');
        this.setState({
          loggedIn: false,
-         username: null
+         username: null,
+         loadedApi: true,
+         twitter: null
        })
+       this.props.history.push("/login");
      }
    })
  }
@@ -62,31 +67,34 @@ class App extends Component {
     return (
       <div className="App">
       <Navbar updateUser={this.updateUser} loggedIn={this.state.loggedIn} />
-      <p>{this.state.username} is logged in {this.state.loggedIn.toString()}</p>
-        <Route
-          exact path="/"
-          render={() =>
-            <Home
-            username={this.state.username}
-            userID={this.state.userID}
-            loggedIn={this.state.loggedIn}
-            />}
-        />
-        <Route
-          path="/login"
-          render={() =>
-            <LoginForm
-              updateUser={this.updateUser}
-            />}
-        />
-        <Route
-          path="/signup"
-          render={() =>
-            <Signup/>}
-        />
+        {this.state.loadedApi &&
+          <div>
+            <Route
+              exact path="/"
+              render={() =>
+                <Home
+                username={this.state.username}
+                userID={this.state.userID}
+                loggedIn={this.state.loggedIn}
+                />}
+            />
+            <Route
+              path="/login"
+              render={() =>
+                <LoginForm
+                  updateUser={this.updateUser}
+                />}
+            />
+            <Route
+              path="/signup"
+              render={() =>
+                <Signup/>}
+            />
+          </div>
+        }
       </div>
     );
   }
 }
 
-export default App;
+export default withRouter(App);
