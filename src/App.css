@@ -94,6 +94,10 @@ button {
   margin: 10px;
 }
 
+#login p {
+  font-size: 16px;
+}
+
 
 .navbar a {
   color: white;
@@ -115,7 +119,7 @@ button {
 }
 
 .stanOutline {
-  flex-grow: 1;
+  flex-grow: 0;
   padding: 5px;
   flex-basis: 20%;
 }
@@ -135,6 +139,20 @@ button {
 .stanWindow {
   max-width: 1000px;
   margin: auto;
+}
+
+#twitter {
+    width: 160px;
+    margin: 20px auto;
+    border: 2px solid #262b33;
+    padding: 10px;
+    background-color: #262b33;
+    border-radius: 1em;
+}
+
+#twitter a {
+  text-decoration: none;
+  color: white;
 }
 
 @media (min-width: 768px) {
