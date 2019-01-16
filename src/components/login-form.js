@@ -37,7 +37,7 @@ class LoginForm extends Component {
                 <div id="login">
                     <p>find friends nearby who stan the same things as you!</p>
                     <div id="twitter">
-                        <a href="http://localhost:3005/v1/account/auth/twitter">~sign in with twitter~</a>
+                        <a href={process.env.REACT_APP_API_URL + '/v1/account/auth/twitter'}>~sign in with twitter~</a>
                     </div>
                     <p>your username stays hidden to other users until you both approve each other</p>
                 </div>
