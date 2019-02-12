@@ -4,22 +4,12 @@ import axios from 'axios'
 
 axios.defaults.withCredentials = true;
 
-class LoginForm extends Component {
+class Login extends Component {
     constructor() {
         super()
         this.state = {
-            username: '',
-            password: '',
             redirectTo: null
         }
-        this.handleChange = this.handleChange.bind(this)
-
-    }
-
-    handleChange(event) {
-        this.setState({
-            [event.target.name]: event.target.value
-        })
     }
 
     handleTwitterSignIn(){
@@ -27,7 +17,6 @@ class LoginForm extends Component {
         console.log(response);
       });
     }
-
 
     render() {
         if (this.state.redirectTo) {
@@ -46,4 +35,4 @@ class LoginForm extends Component {
     }
 }
 
-export default LoginForm
+export default Login

@@ -1,10 +1,8 @@
 import React, { Component } from 'react';
 import { Route, Link, withRouter } from 'react-router-dom'
 import axios from 'axios'
-import logo from './logo.svg';
 import './App.css';
-import Signup from './components/sign-up';
-import LoginForm from './components/login-form';
+import Login from './components/Login';
 import Navbar from './components/navbar';
 import Home from './components/home';
 
@@ -81,14 +79,8 @@ class App extends Component {
             <Route
               path="/login"
               render={() =>
-                <LoginForm
-                  updateUser={this.updateUser}
+                <Login
                 />}
-            />
-            <Route
-              path="/signup"
-              render={() =>
-                <Signup/>}
             />
           </div>
         }
