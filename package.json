@@ -9,7 +9,8 @@
     "react-dom": "^16.6.3",
     "react-flip-toolkit": "^6.3.0",
     "react-router-dom": "^4.3.1",
-    "react-scripts": "2.1.1"
+    "react-scripts": "2.1.1",
+    "react-test-renderer": "^16.8.1"
   },
   "scripts": {
     "start": "NODE_ENV=development react-scripts start",
@@ -28,8 +29,10 @@
   ],
   "proxy": "http://localhost:3005",
   "devDependencies": {
-    "dotenv": "^6.1.0",
     "body-parser": "^1.18.2",
+    "dotenv": "^6.1.0",
+    "enzyme": "^3.8.0",
+    "enzyme-adapter-react-16": "^1.9.1",
     "express": "^4.16.2",
     "path": "^0.12.7"
   }
