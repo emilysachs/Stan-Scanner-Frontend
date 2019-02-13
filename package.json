@@ -29,8 +29,10 @@
   ],
   "proxy": "http://localhost:3005",
   "devDependencies": {
-    "dotenv": "^6.1.0",
     "body-parser": "^1.18.2",
+    "dotenv": "^6.1.0",
+    "enzyme": "^3.8.0",
+    "enzyme-adapter-react-16": "^1.9.1",
     "express": "^4.16.2",
     "path": "^0.12.7"
   }

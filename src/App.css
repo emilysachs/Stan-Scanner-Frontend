@@ -1,3 +1,5 @@
+/* General */
+
 body {
   background-color: #c8cddd;
 }
@@ -45,28 +47,29 @@ body {
   color: #61dafb;
 }
 
-.body{
-  display: flex;
-  flex-direction: column;
-}
-
 button {
   cursor: pointer;
   font-size: 14px;
   font-family: 'Varela Round', sans-serif;
   border-radius: 5px;
   padding: 5px 7px;
+  margin-top: 5px;
 }
 
-.distanceInput {
+/* Home */
+
+#distanceInput {
   max-width: 1000px;
   text-align: center;
   margin: auto;
 }
 
-.fandomGrid {
-  display: flex;
-  flex-wrap: wrap;
+#distanceInput  p {
+  margin: 10px;
+}
+
+#distanceSlider {
+  margin: 10px;
 }
 
 .fandomBox {
@@ -76,33 +79,14 @@ button {
   flex-basis: 25%;
 }
 
-.sideBar {
-  padding: 0px 10px;
+.fandomGrid {
+  display: flex;
+  flex-wrap: wrap;
 }
 
-.sideBar ul {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-.distanceInput  p {
-  margin: 10px;
-}
-
-.distanceSlider {
-  margin: 10px;
-}
-
-#login p {
-  font-size: 16px;
-}
-
-
-.navbar a {
-  color: white;
-  margin: 0;
-  text-decoration: none;
+#home{
+  display: flex;
+  flex-direction: column;
 }
 
 .stanBox {
@@ -118,12 +102,6 @@ button {
   margin: 5px;
 }
 
-.stanOutline {
-  flex-grow: 0;
-  padding: 5px;
-  flex-basis: 20%;
-}
-
 .stanDetails {
   flex: 0 0 12em;
 }
@@ -132,13 +110,46 @@ button {
   text-align: left;
 }
 
-.stanGrid {
+#stanGrid {
   clear: both;
 }
 
-.stanWindow {
+.stanOutline {
+  flex-grow: 0;
+  padding: 5px;
+  flex-basis: 24%;
+}
+
+#stanWindow {
   max-width: 1000px;
   margin: auto;
+}
+
+/* SideBar */
+
+#sideBar {
+  padding: 0px 10px;
+}
+
+#sideBar ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* Login */
+
+#definition p {
+  text-align: center;
+}
+
+#login {
+  margin: auto;
+  width: fit-content;
+}
+
+#login p {
+  font-size: 16px;
 }
 
 #twitter {
@@ -155,29 +166,39 @@ button {
   color: white;
 }
 
+/* NavBar */
+
+.navbar a {
+  color: white;
+  margin: 0;
+  text-decoration: none;
+}
+
+/* Responsive */
+
 @media (min-width: 768px) {
-  .body {
+  #home {
     flex-direction: row;
     flex: 1;
   }
-  .mainContent {
+  #mainContent {
     flex: 1;
   }
-  .sideBar {
+  #sideBar {
     flex: 0 0 12em;
   }
-  .rightSideBar {
+  #rightSideBar {
     flex: 0 0 6em;
   }
   .fandomGrid {
     display: block;
   }
-  .distanceInput  p {
+  #distanceInput  p {
     padding: 0;
     float: left;
   }
 
-  .distanceSlider {
+  #distanceSlider {
     float: right;
     margin: 0;
     padding: 0;
@@ -196,10 +217,10 @@ button {
   }
 
   .stanOutline {
-    flex-basis: 20%;
+    flex-basis: 24%;
   }
 
-  .stanGrid {
+  #stanGrid {
     display: flex;
     flex-wrap: wrap;
     clear: both;
@@ -209,21 +230,12 @@ button {
     text-align: center;
   }
 
-  .stanWindow {
+  #stanWindow {
     max-width: 1000px;
     margin: auto;
   }
 
   .stanUsername, .stanDistance, .stanActions {
     float: none;
-  }
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
   }
 }

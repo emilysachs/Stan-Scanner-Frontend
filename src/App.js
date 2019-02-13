@@ -1,70 +1,63 @@
 import React, { Component } from 'react';
-import { Route, Link, withRouter } from 'react-router-dom'
+import { Route, withRouter } from 'react-router-dom'
 import axios from 'axios'
 import './App.css';
-import Login from './components/Login';
-import Navbar from './components/navbar';
-import Home from './components/home';
+import Login from './components/Login/Login.js';
+import NavBar from './components/NavBar/NavBar.js';
+import Home from './components/Home/Home.js';
 
 axios.defaults.withCredentials = true;
 
 class App extends Component {
   constructor() {
-   super()
-   this.state = {
-     loggedIn: false,
-     username: null,
-     userID: null,
-     loadedApi: false
-   }
+    super()
+    this.state = {
+      loggedIn: false,
+      username: null,
+      userID: null,
+      loadedApi: false
+    }
 
-   this.getUser = this.getUser.bind(this)
-   this.componentDidMount = this.componentDidMount.bind(this)
-   this.updateUser = this.updateUser.bind(this)
- }
+    this.getUser = this.getUser.bind(this)
+    this.componentDidMount = this.componentDidMount.bind(this)
+    this.updateUser = this.updateUser.bind(this)
+  }
 
- componentDidMount() {
-   this.getUser()
-}
+  componentDidMount() {
+    this.getUser()
+  }
 
- updateUser (userObject) {
-   console.log("updating!");
-   console.log(userObject);
-   this.setState(userObject);
- }
+  // Update user state from NavBar (logout)
+  updateUser (userObject) {
+    this.setState(userObject);
+  }
 
- getUser() {
-   console.log("getting");
-   axios.get(process.env.REACT_APP_API_URL + '/v1/account/').then(response => {
-     console.log('Get user response: ')
-     console.log(response.data);
-     console.log(response.data.user);
-     if (response.data.user) {
-       console.log('Get User: There is a user saved in the server session: ')
+  // Check if user is saved in server session, otherwise redirect to login 
+  getUser() {
+    axios.get(process.env.REACT_APP_API_URL + '/v1/account/').then(response => {
+      if (response.data.user) {
+        this.setState({
+          loggedIn: true,
+          username: response.data.user.username,
+          userID: response.data.user._id,
+          loadedApi: true
+        });
+      } else {
+        this.setState({
+          loggedIn: false,
+          username: null,
+          loadedApi: true,
+          twitter: null
+        })
+        this.props.history.push("/login");
+      }
+    })
+  }
 
-       this.setState({
-         loggedIn: true,
-         username: response.data.user.username,
-         userID: response.data.user._id,
-         loadedApi: true
-       });
-     } else {
-       console.log('Get user: no user');
-       this.setState({
-         loggedIn: false,
-         username: null,
-         loadedApi: true,
-         twitter: null
-       })
-       this.props.history.push("/login");
-     }
-   })
- }
   render() {
-
     return (
       <div className="App">
-      <Navbar updateUser={this.updateUser} loggedIn={this.state.loggedIn} />
+      <NavBar updateUser={this.updateUser} loggedIn={this.state.loggedIn} />
         {this.state.loadedApi &&
           <div>
             <Route
@@ -79,7 +72,7 @@ class App extends Component {
             <Route
               path="/login"
               render={() =>
-                <Login
+                <Login loggedIn={this.state.loggedIn}
                 />}
             />
           </div>
