@@ -72,13 +72,6 @@ button {
   margin: 10px;
 }
 
-.fandomBox {
-  justify-content: space-around;
-  flex: 1;
-  flex-grow: 0;
-  flex-basis: 25%;
-}
-
 .fandomGrid {
   display: flex;
   flex-wrap: wrap;
@@ -126,6 +119,19 @@ button {
 }
 
 /* SideBar */
+
+.fandomBox {
+  justify-content: space-around;
+  flex: 1;
+  flex-grow: 0;
+  flex-basis: 25%;
+}
+
+.removeFandom {
+  padding: 0px 3px;
+  margin-left: 5px;
+  font-size: 11px;
+}
 
 #sideBar {
   padding: 0px 10px;

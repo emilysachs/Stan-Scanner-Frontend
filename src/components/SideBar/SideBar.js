@@ -16,9 +16,16 @@ class SideBar extends Component {
 
   handleFandomClick(){
     this.props.updateFandoms(this.state.fandomValue);
+    this.setState({
+      fandomValue: ''
+    });
   }
 
-  handleFandomClick(event) {
+  handleFandomRemoveClick(value){
+    this.props.removeFandom(value);
+  }
+
+  handleFandomChange(event) {
     this.setState({fandomValue: event.target.value});
   }
 
@@ -47,6 +54,7 @@ class SideBar extends Component {
       return (
         <div className="fandomBox" key={fandom}>
           {fandom}
+          <button className="removeFandom" onClick={() => this.handleFandomRemoveClick(fandom)}> x</button>
         </div>
         );
     });
@@ -57,7 +65,7 @@ class SideBar extends Component {
         <br></br>
         <div id="addFandom">
           <label>
-            <input type="text" value={this.state.fandomValue} onChange={this.handleFandomClick.bind(this)} />
+            <input type="text" value={this.state.fandomValue} onChange={this.handleFandomChange.bind(this)} />
           </label>
           <button onClick={this.handleFandomClick.bind(this)}>add to stan list</button>
         </div>

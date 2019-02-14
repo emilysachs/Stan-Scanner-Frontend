@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import SideBar from '../SideBar/SideBar.js';
 import axios from 'axios'
 
-const DEFAULT_MILES_MAX = 100;
+const DEFAULT_MILES_MAX = 2000; // high radius for testing, lower max radius to 200 miles for production
 const MILES_MIN = 0;
 
 axios.defaults.withCredentials = true;
@@ -103,7 +103,16 @@ class Home extends Component {
   // Approve another user to view current user's twitter username 
   approveFriend(stanUsername){
     axios.get(process.env.REACT_APP_API_URL + '/v1/account/approve/' + stanUsername).then(response => {
-      // console.log(response.data);
+       // currently refreshes entire list, most likely can optimize by only updating state of affected user
+       this.findStansNearby();
+    });
+  }
+
+  // Removal approval another user to view current user's twitter username 
+  rejectFriend(stanUsername){
+    axios.get(process.env.REACT_APP_API_URL + '/v1/account/reject/' + stanUsername).then(response => {
+       // currently refreshes entire list, most likely can optimize by only updating state of affected user
+       this.findStansNearby();
     });
   }
 
@@ -141,6 +150,19 @@ class Home extends Component {
     }
   }
 
+  // Add new fandom to user's fandoms and refresh search for other users nearby based on similar fandoms
+  removeFandom(value){
+    if(this.state.fandoms.includes(value)){
+      axios.put(process.env.REACT_APP_API_URL + '/v1/account/removeFandom/' + value.toLowerCase()).then(response => {
+          console.log(response);
+          this.setState({
+            fandoms: response.data.fandoms
+          });
+          this.findStansNearby();
+      });
+    }
+  }
+
   render() {
     // Sort array of users by nearest to furthest
     function compare(a,b) {
@@ -153,7 +175,7 @@ class Home extends Component {
       return 0;
     }
 
-    var { stans, fandoms } = this.state;
+    var { stans } = this.state;
 
     // Build grid of nearby users with similar fandoms
     var stansList = stans.sort(compare).map((stan) => {
@@ -171,7 +193,7 @@ class Home extends Component {
                   <button onClick={() => {this.approveFriend(stan.username)}}><span role="img" aria-label="emoji">🙏</span> shoot ur shot</button>}
                 {/* Show friendship as pending if current user has approved but other user has not */}
                 {stan.following 
-                  && !stan.mutuals && <p><span role="img" aria-label="emoji">😌</span> (pending)</p>}
+                  && !stan.mutuals && <button onClick={() => {this.rejectFriend(stan.username)}}><span role="img" aria-label="emoji">😌</span> (pending)</button>}
                 {/* Show link to other user's twitter profile once both users have mutually approved eachother */}
                 {stan.mutuals 
                   && <button onClick={() => {this.sayHi(stan._id)}}><span role="img" aria-label="emoji">😗🤝</span> say hi !</button>}
@@ -190,6 +212,7 @@ class Home extends Component {
           fandoms={this.state.fandoms} 
           findStansNearby={this.findStansNearby.bind(this)}
           updateFandoms={this.updateFandoms.bind(this)}
+          removeFandom={this.removeFandom.bind(this)}
         />
         <div id="mainContent">
           <div id="distanceInput">
